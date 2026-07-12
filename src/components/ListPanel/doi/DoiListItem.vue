@@ -97,6 +97,48 @@
 							/>
 						</TableCell>
 					</TableRow>
+					<template v-for="row in currentVersionDoiObjects" :key="row.uid + '-urls'">
+					<TableRow v-if="row.type === 'publication'">
+						<TableCell>
+							<label class="text-sm">
+								{{ t('manager.dois.landingPageUrl') }}
+							</label>
+						</TableCell>
+						<TableCell>
+							<input
+								:id="row.uid + '-landingPageUrl'"
+								v-model="
+									mutableDois.find((doi) => doi.uid === row.uid).landingPageUrl
+								"
+								class="pkpFormField__input pkpFormField--text__input"
+								type="text"
+								:readonly="!(isEditingDois && !isSaving)"
+								:disabled="isEditingDois && row.disabled"
+								:placeholder="t('manager.dois.landingPageUrlPlaceholder')"
+							/>
+						</TableCell>
+					</TableRow>
+					<TableRow v-if="row.type === 'publication'">
+						<TableCell>
+							<label class="text-sm">
+								{{ t('manager.dois.fullTextUrl') }}
+							</label>
+						</TableCell>
+						<TableCell>
+							<input
+								:id="row.uid + '-fullTextUrl'"
+								v-model="
+									mutableDois.find((doi) => doi.uid === row.uid).fullTextUrl
+								"
+								class="pkpFormField__input pkpFormField--text__input"
+								type="text"
+								:readonly="!(isEditingDois && !isSaving)"
+								:disabled="isEditingDois && row.disabled"
+								:placeholder="t('manager.dois.fullTextUrlPlaceholder')"
+							/>
+						</TableCell>
+					</TableRow>
+					</template>
 				</TableBody>
 			</PkpTable>
 			<span v-if="item.hasDisabled">
@@ -542,6 +584,8 @@ export default {
 					uid: item.uid,
 					doiId: item.doiId,
 					identifier: item.identifier,
+					landingPageUrl: item.landingPageUrl || '',
+					fullTextUrl: item.fullTextUrl || '',
 					pubObjectType: item.type,
 					pubObjectId: item.id,
 				});
@@ -557,7 +601,9 @@ export default {
 				const oldDoiItem = this.item.doiObjects.find(
 					(item) => item.uid === mutableDoi.uid,
 				);
-				if (oldDoiItem.identifier !== mutableDoi.identifier) {
+				if (oldDoiItem.identifier !== mutableDoi.identifier ||
+					(oldDoiItem.landingPageUrl || '') !== (mutableDoi.landingPageUrl || '') ||
+					(oldDoiItem.fullTextUrl || '') !== (mutableDoi.fullTextUrl || '')) {
 					let items = {...this.itemsToUpdate};
 					items[mutableDoi.uid] = {
 						isFinished: false,
@@ -611,6 +657,8 @@ export default {
 				data: {
 					contextId: this.item.contextId,
 					doi: `${itemToUpdate.identifier}`,
+					landingPageUrl: itemToUpdate.landingPageUrl || '',
+					fullTextUrl: itemToUpdate.fullTextUrl || '',
 				},
 				success(response) {
 					itemToUpdate.doiId = response.id;
@@ -647,6 +695,8 @@ export default {
 		editDoi(itemToUpdate) {
 			let data = {
 				doi: itemToUpdate.identifier,
+				landingPageUrl: itemToUpdate.landingPageUrl || '',
+				fullTextUrl: itemToUpdate.fullTextUrl || '',
 			};
 
 			// Handle editing of DOIs differently when versioning is enabled.

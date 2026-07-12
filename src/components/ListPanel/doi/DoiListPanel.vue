@@ -953,6 +953,10 @@ export default {
 						: doiObject[this.registrationAgencyInfo['registeredMessageKey']],
 				registrationAgency:
 					doiObject === null ? null : doiObject.registrationAgency,
+				landingPageUrl:
+					doiObject === null ? "" : (doiObject.landingPageUrl || ""),
+				fullTextUrl:
+					doiObject === null ? "" : (doiObject.fullTextUrl || ""),
 				...props,
 			};
 		},
