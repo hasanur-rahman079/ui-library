@@ -2,14 +2,14 @@
 	<fieldset class="pkpFormField pkpFormField--options" :class="classes">
 		<legend class="pkpFormField--options__legend">
 			<template v-if="localeLabel">
-				<span class="aria-hidden align-middle">{{ localeLabel }}</span>
+				<span aria-hidden="true" class="align-middle">{{ localeLabel }}</span>
 				<span class="-screenReader">{{ multilingualLabel }}</span>
 			</template>
 			<template v-else>
 				<span class="align-middle">{{ label }}</span>
 			</template>
 			<span v-if="showRequired" class="pkpFormFieldLabel__required">
-				*
+				<span aria-hidden="true">*</span>
 				<span class="-screenReader">{{ t('common.required') }}</span>
 			</span>
 			<Tooltip
@@ -51,7 +51,7 @@
 						type="radio"
 						:name="localizedName"
 						:aria-describedby="describedByIds"
-						:aria-invalid="errors && errors.length"
+						:aria-invalid="!!errors?.length"
 						:disabled="option.disabled"
 					/>
 					{{ option.label }}
@@ -63,7 +63,7 @@
 						type="radio"
 						:name="localizedName"
 						:aria-describedby="describedByIds"
-						:aria-invalid="errors && errors.length"
+						:aria-invalid="!!errors?.length"
 						:disabled="option.disabled"
 						@change="selectInput"
 					/>
@@ -74,7 +74,7 @@
 						class="pkpFormField__input pkpFormField--options__input--text"
 						type="text"
 						:aria-describedby="describedByIds"
-						:aria-invalid="errors && errors.length"
+						:aria-invalid="!!errors?.length"
 						:disabled="option.disabled"
 						@focus="selectInput"
 					/>

@@ -18,6 +18,8 @@ export const useGalleyManagerStore = defineComponentStore(
 
 		const {triggerDataChange} = useDataChanged();
 
+		const galleyManagerConfig = extender.addFns(useGalleyManagerConfig());
+
 		/**
 		 * Sorting with useOrdering composable
 		 */
@@ -33,7 +35,7 @@ export const useGalleyManagerStore = defineComponentStore(
 			onSave: async (orderedItems) => {
 				const {openDialogNetworkError} = useModal();
 				const {url} = useLegacyGridUrl({
-					component: 'grid.articleGalleys.ArticleGalleyGridHandler',
+					component: galleyManagerConfig.getGalleyGridComponent(),
 					op: 'saveSequence',
 					params: {
 						submissionId: props.submission.id,
@@ -75,7 +77,6 @@ export const useGalleyManagerStore = defineComponentStore(
 		/** Reload files when data on screen changes */
 
 		/** Columns */
-		const galleyManagerConfig = extender.addFns(useGalleyManagerConfig());
 		const columns = computed(() => galleyManagerConfig.getColumns());
 
 		/**
@@ -85,6 +86,7 @@ export const useGalleyManagerStore = defineComponentStore(
 			galleyManagerConfig.getManagerConfig({
 				submission,
 				publication,
+				canCurrentUserEditPublication: props.canCurrentUserEditPublication,
 			}),
 		);
 
@@ -149,6 +151,17 @@ export const useGalleyManagerStore = defineComponentStore(
 			);
 		}
 
+		function galleyView({galley}) {
+			galleyManagerActions.galleyView(
+				{
+					galley,
+					publication: props.publication,
+					submission: props.submission,
+				},
+				triggerDataChangeCallback,
+			);
+		}
+
 		function galleyDelete({galley}) {
 			galleyManagerActions.galleyDelete(
 				{
@@ -181,6 +194,7 @@ export const useGalleyManagerStore = defineComponentStore(
 			/** Actions */
 			galleyAdd,
 			galleyEdit,
+			galleyView,
 			galleyChangeFile,
 			galleyDelete,
 
